@@ -1,0 +1,37 @@
+[{
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Normal User can read content",
+        "displayName": "User",
+        "isEnabled": true,
+        "value": "read"
+    },
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Admin User can read and write content",
+        "displayName": "Admin",
+        "isEnabled": true,
+        "value": "write"
+    },
+    {
+        "allowedMemberTypes": [
+            "Application"
+        ],
+        "displayName": "APIRead",
+        "isEnabled": true,
+        "description": "Applications can use the GET REST method",
+        "value": "APIread"
+    },
+    {
+        "allowedMemberTypes": [
+            "Application"
+        ],
+        "displayName": "APIWrite",
+        "isEnabled": true,
+        "description": "Applications can use all REST methods (POST, PATCH, GET etc)",
+        "value": "APIwrite"
+    }
+]

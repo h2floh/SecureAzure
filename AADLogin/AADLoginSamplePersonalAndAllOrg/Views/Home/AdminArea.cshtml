@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "AdminArea";
+}
+
+@if (User.IsInRole("write"))
+{
+    <h1>AdminArea Access Granted</h1>
+
+}
+else
+{
+    <h1>AccessDenied</h1>
+}
