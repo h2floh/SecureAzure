@@ -5,13 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
+using AADLoginSamplePersonalAndAllOrg.Service;
 
 namespace AADLoginSamplePersonalAndAllOrg
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -19,6 +22,9 @@ namespace AADLoginSamplePersonalAndAllOrg
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .ConfigurationFromKeyVaultAndAzureAppConfig((context, config) => { })
+                .UseStartup<Startup>()
+                .ConfigureKestrelSSLFromKeyVault((context, options) => { });
+
     }
 }

@@ -76,7 +76,7 @@ namespace Microsoft.Identity.Web
                 options.TokenValidationParameters.NameClaimType = "preferred_username";
 
                 // Force the account selection (to avoid automatic sign-in with the account signed-in with Windows)
-                //options.Prompt = "select_account";
+                options.Prompt = "select_account";
 
                 // Avoids having users being presented the select account dialog when they are already signed-in
                 // for instance when going through incremental consent

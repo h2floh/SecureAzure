@@ -52,14 +52,14 @@ namespace AADLoginSamplePersonalAndAllOrg
             // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
             // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
             // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
-            System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
             services.AddAzureAdV2Authentication(Configuration)
-                   .AddMsal(new string[] { Constants.ScopeUserRead, Constants.ScopeDirectoryReadAll });
-                   // .AddInMemoryTokenCaches();
+                   .AddMsal(new string[] { Constants.ScopeUserRead })
+                   .AddInMemoryTokenCaches();
 
             // Add Graph
-            services.AddGraphService(Configuration);
+            //services.AddGraphService(Configuration);
 
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
             {

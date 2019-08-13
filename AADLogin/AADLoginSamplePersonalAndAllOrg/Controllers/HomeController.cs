@@ -11,6 +11,7 @@ using AADLoginSamplePersonalAndAllOrg.Services;
 using Microsoft.Extensions.Options;
 using AADLoginSamplePersonalAndAllOrg.Infrastructure;
 using Microsoft.Graph;
+using Microsoft.Extensions.Configuration;
 
 namespace AADLoginSamplePersonalAndAllOrg.Controllers
 {
@@ -19,35 +20,33 @@ namespace AADLoginSamplePersonalAndAllOrg.Controllers
     {
         readonly ITokenAcquisition tokenAcquisition;
         readonly WebOptions webOptions;
+        readonly IConfiguration configuration;
 
         public HomeController(ITokenAcquisition tokenAcquisition,
-                              IOptions<WebOptions> webOptionValue)
+                              IOptions<WebOptions> webOptionValue, IConfiguration configuration)
         {
             this.tokenAcquisition = tokenAcquisition;
             this.webOptions = webOptionValue.Value;
+            this.configuration = configuration;
         }
 
         [AllowAnonymous]
         [MsalUiRequiredExceptionFilter(Scopes = new[] { GraphScopes.DirectoryReadAll })]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var claims = ((System.Security.Claims.ClaimsIdentity)User.Identity).Claims;
 
             ViewBag.Message = "Your app roles.";
+            ViewData["myconfig"] = configuration["myconfig"];
             try
             {
-                string[] scopes = new[] { GraphScopes.DirectoryReadAll };
-
-                GraphServiceClient graphServiceClient = GraphServiceClientFactory.GetAuthenticatedGraphClient(async () =>
+                var list = new List<string>();
+                foreach(var claim in claims)
                 {
-                    string result = await tokenAcquisition.GetAccessTokenOnBehalfOfUser(
-                           HttpContext, scopes);
-                    return result;
-                }, webOptions.GraphApiUrl);
+                    list.Add(claim.Type + ":" + claim.Value);
+                }
 
-                var groups = await graphServiceClient.Me.MemberOf.Request().GetAsync();
-
-                ViewData["appRoles"] = groups.CurrentPage;
+                ViewData["appRoles"] = list;
 
             }
             catch (Exception e)
