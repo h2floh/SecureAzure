@@ -17,8 +17,8 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Client.TokenCacheProviders;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using AADLoginSamplePersonalAndAllOrg.Services;
-using AADLoginSamplePersonalAndAllOrg.Infrastructure;
+//using AADLoginSamplePersonalAndAllOrg.Services;
+//using AADLoginSamplePersonalAndAllOrg.Infrastructure;
 
 namespace AADLoginSamplePersonalAndAllOrg
 {
@@ -54,9 +54,9 @@ namespace AADLoginSamplePersonalAndAllOrg
             // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
-            services.AddAzureAdV2Authentication(Configuration)
-                   .AddMsal(new string[] { Constants.ScopeUserRead })
-                   .AddInMemoryTokenCaches();
+            services.AddAzureAdV2Authentication(Configuration);
+                   //.AddMsal(new string[] { Constants.ScopeUserRead })
+                   //.AddInMemoryTokenCaches();
 
             // Add Graph
             //services.AddGraphService(Configuration);

@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AADLoginSamplePersonalAndAllOrg.Models;
-using Microsoft.Identity.Web.Client;
-using AADLoginSamplePersonalAndAllOrg.Services;
-using Microsoft.Extensions.Options;
-using AADLoginSamplePersonalAndAllOrg.Infrastructure;
-using Microsoft.Graph;
 using Microsoft.Extensions.Configuration;
 
 namespace AADLoginSamplePersonalAndAllOrg.Controllers
@@ -18,26 +13,21 @@ namespace AADLoginSamplePersonalAndAllOrg.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        readonly ITokenAcquisition tokenAcquisition;
-        readonly WebOptions webOptions;
         readonly IConfiguration configuration;
 
-        public HomeController(ITokenAcquisition tokenAcquisition,
-                              IOptions<WebOptions> webOptionValue, IConfiguration configuration)
+        public HomeController(IConfiguration configuration)
         {
-            this.tokenAcquisition = tokenAcquisition;
-            this.webOptions = webOptionValue.Value;
             this.configuration = configuration;
         }
 
         [AllowAnonymous]
-        [MsalUiRequiredExceptionFilter(Scopes = new[] { GraphScopes.DirectoryReadAll })]
         public IActionResult Index()
         {
             var claims = ((System.Security.Claims.ClaimsIdentity)User.Identity).Claims;
 
+            // App Roles
             ViewBag.Message = "Your app roles.";
-            ViewData["myconfig"] = configuration["myconfig"];
+            
             try
             {
                 var list = new List<string>();
@@ -62,6 +52,27 @@ namespace AADLoginSamplePersonalAndAllOrg.Controllers
         [Authorize(Roles = "read, write")]
         public IActionResult AdminArea()
         {
+            if (User.IsInRole("write"))
+            {
+                // Config Values
+                try
+                {
+                    var list = new List<string>();
+                    foreach (var item in configuration.AsEnumerable())
+                    {
+                        list.Add(item.Key + ":" + item.Value);
+                    }
+
+                    ViewData["appConfig"] = list;
+                }
+                catch (Exception e)
+                {
+                    var exceptions = new List<String>();
+                    exceptions.Add(e.Message);
+                    ViewData["appRoles"] = exceptions;
+                }
+            }
+
             return View();
         }
 

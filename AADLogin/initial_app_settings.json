@@ -11,6 +11,5 @@
             "Default": "Warning"
         }
     },
-    "AllowedHosts": "*",
-    "GraphApiUrl": "https://graph.microsoft.com/beta"
+    "AllowedHosts": "*"
 }

@@ -6,9 +6,15 @@
 @if (User.IsInRole("write"))
 {
     <h1>AdminArea Access Granted</h1>
-
+    <h3>Your Config values (contains secrets!):</h3>
+    <ul>
+        @foreach (string str in (List<string>)ViewData["appConfig"])
+        {
+            <li>@str</li>
+        }
+    </ul>
 }
 else
 {
-    <h1>AccessDenied</h1>
+    <h1>Access Denied</h1>
 }
