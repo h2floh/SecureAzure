@@ -8,71 +8,79 @@ TODO: Clean up and describe steps in detail.
 az appconfig create -g securewebapp --name  <YourAppConfigName> --location southeastasia
 ```
 ```
-az appconfig kv import -n <YourAppConfigName> -s file --path .\initial_app_settings.json --format json
+az appconfig kv import -n <YourAppConfigName> --source file --path .\initial_app_settings.json --format json --separator '-'
 ```
-Manual Import because of preview limitation
 
-## Like SSL create Keyvault
-https://github.com/h2floh/AzureSecure/tree/master/SSL
-For details on Kestrel SSL see [here](../SSL/README.md)
-
-## And SSL Certificate
+## Create a KeyVault
 ```
 az keyvault create --resource-group securewebapp --name  <YourKeyVaultName> --location koreacentral
 ```
+
+## Set Azure App Configuration Secret
 ```
-az keyvault certificate create --vault-name  <YourKeyVaultName> --name LocalhostK8s --policy "@..\SSL\k8s_localhost_policy.json"
+az keyvault secret set --vault-name <YourKeyVaultName> --name "ConnectionStrings--AppConfig" --value $(az appconfig credential list -n <YourAppConfigName>  --query '[0].connectionString' -o tsv)
+```
+
+Generate SSL certificate for webserver. For details on Kestrel SSL see [here](../SSL/README.md).
+```
+az keyvault certificate create --vault-name <YourKeyVaultName> --name LocalhostK8s --policy "@..\SSL\k8s_localhost_policy.json"
 ```
 
 ## App ID from seperate new app with app roles etc...
+We will now create an Azure Active Directory application and directly adding roles which are used for authorization within the webapp code.
+```
+az ad app create --display-name AADLoginSamplePersonalAndAllOrg --app-roles "@app_roles_manifest.json" --available-to-other-tenants true  
+$appId = $(az ad app list --display-name AADLoginSamplePersonalAndAllOrg --query '[0].appId' -o tsv)
+```
+
+When to set password???
+```
+az ad sp credential reset --name $appId
+```
+
+We will also need to add a service principal (otherwise app is not available under Enterprise Applications to assign users and groups to roles)
+```
+az ad sp create --id $appId
+```
+
+Now we are changing some properties of the App
+```
+az ad app update --id $appId --set logoutUrl=https://localhost:44363/signout-oidc
+```
+
+### Change Properties of Application in Azure Portal
+There are several properties which currently can not be defined via Azure CLI. You can use Powershell or Azure Portal to set following values (in the Application manifest file).<br/>
 
 ```
-az ad app create --display-name AADLoginSamplePersonalAndAllOrg --identifier-uris https://localhost --app-roles "@app_roles_manifest.json" --available-to-other-tenants true  
+"replyUrlsWithType": [
+        {
+                "url": "https://localhost:44363/signin-oidc",
+                "type": "Web"
+        },
+        {
+                "url": "https://localhost:44363/",
+                "type": "Web"
+        }
+],
+...
+"signInAudience": "AzureADandPersonalMicrosoftAccount",
 ```
 
-### Change Properties of app
-signInAudience=AzureADandPersonalMicrosoftAccountProperty 'signInAudience' is read-only and cannot be set.
-
-Add in Portal
-
-Redirect URLs 
-LogoutURL
-Change "signInAudience": "AzureADandPersonalMicrosoftAccount",
-
+For your reference the possible values for _signInAudience_ are:
 • AzureADMyOrg - Users with a Microsoft work or school account in my organization’s Azure AD tenant (i.e. single tenant)
 • AzureADMultipleOrgs - Users with a Microsoft work or school account in any organization’s Azure AD tenant (i.e. multi-tenant)
 AzureADandPersonalMicrosoftAccount - Users with a personal Microsoft account, or a work or school account in any organization’s Azure AD tenant
 
-Service Principal missing
-```
-az ad add service pricinpal command 
-```
-
-### Add Graph Permissions (not needed for this one, check again)
-ADD  Delegation Directory.Read.All, User.Read, User.ReadBasic.All
-
-```
-az ad app permission add --id <YourAppId> --api
-        00000003-0000-0000-c000-000000000000 --api-permissions
-       06da0dbc-49e2-44d2-8312-53f166ab848a=Scope e1fe6dd8-ba31-4d61-89e7-88639da4683d=Scope b340eb25-3456-403f-be2f-af7a0d370277=Scope
-```
-
 ## Add rights to new app on keyvault
 
 ```
-az keyvault set-policy --name  <YourKeyVaultName> --spn 1db0da9a-80cf-448b-9894-1ec86cb8f331 --certificate-permissions get list --secret-permissions get list
+az keyvault set-policy --name <YourKeyVaultName> --spn $appId --certificate-permissions get list --secret-permissions get list
 ```
 
-## Set Azure App Configuration Secret
-
-```
-az keyvault secret set --vault-name  <YourKeyVaultName> --name "ConnectionStrings--AppConfig" --value $(az 
-appconfig credential list -n <YourAppConfigName>  --query '[0].connectionString' -o tsv)
-```
 
 ## Set AzureAD Client Secret
 ```
-az keyvault secret set --vault-name  <YourKeyVaultName> --name "AzureAd--ClientSecret" --value "<AppClientSecret>"
+az keyvault secret set --vault-name <YourKeyVaultName> --name "AzureAd--ClientSecret" --value "<AppClientSecret>"
 ```
 
 ## Docker build
