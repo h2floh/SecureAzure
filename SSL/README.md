@@ -1,4 +1,4 @@
-# Create KeyVault with self signed localhost and wildcard *.cluster.local certificate
+# Create KeyVault with self signed localhost and wildcard *.default.svc.cluster.local (Kubernetes Services in default namespace) certificate
 This is a preparation step for HTTPS SSL communication between (Micro)services in a Kubernetes Cluster from a one-click deployment (can not know the service names or IPs beforehand).
 <br/><br/>
 Main idea:
@@ -21,6 +21,17 @@ az keyvault create --resource-group securewebapp --name <YourKeyVaultName> --loc
 ```
 
 ## Create Certificate
+If you are using another Kubernetes namespace you have to add your namespace to the _subjectAlternativeNames_ in this [file](k8s_localhost_policy.json) like this:
+```
+        "subjectAlternativeNames": {
+            "dnsNames": [
+                "localhost",
+                "*.cluster.local",
+                "*.svc.cluster.local",
+                "*.default.svc.cluster.local",
+                "*.<yournamespace>.svc.cluster.local"
+            ],
+```
 From this github's base path:
 ```
 cd SSL
