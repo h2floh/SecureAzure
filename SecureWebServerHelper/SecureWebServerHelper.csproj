@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Microsoft.CSE.SecureWebServerHelper</RootNamespace>
+    <PackageId>Microsoft.CSE.SecureWebServerHelper</PackageId>
+    <Authors>Florian Wagner</Authors>
+    <Company>Microsoft</Company>
+    <Product>Microsoft.CSE.SecureWebServerHelper</Product>
+    <Copyright>MIT</Copyright>
+    <PackageProjectUrl>https://github.com/h2floh/SecureAzure</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/h2floh/SecureAzure/SecureWebServerHelper</RepositoryUrl>
+    <PackageTags>ASPCore, Kestrel, SSL, AppConfiguration, KeyVault</PackageTags>
+    <RepositoryType>GIT</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.1-preview</Version>
+    <AssemblyVersion>0.0.1.1</AssemblyVersion>
+    <FileVersion>0.0.1.1</FileVersion>
+    <Description>IWebHostBuilder fluent configuration extensions to integrate KeyVault, Azure App Configuration Service with ease to your ASP.NET Core Kestrel Webserver to save secrets and configuration outside appconfig and to integrate SSL certificates and install private CA certificates for secure, trusted microservice communication</Description>
+    <SignAssembly>false</SignAssembly>
+    <ApplicationIcon />
+    <Win32Resource />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="2.0.0-preview-009470001-1371" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>

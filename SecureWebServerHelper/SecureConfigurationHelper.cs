@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AADLoginSamplePersonalAndAllOrg.Helper
+namespace Microsoft.CSE.SecureWebServerHelper
 {
     public static class SecureConfigurationHelper
     {
