@@ -22,7 +22,7 @@ az keyvault create --resource-group securewebapp --name <YourKeyVaultName> --loc
 
 ## Create Certificate
 If you are using another Kubernetes namespace you have to add your namespace to the _subjectAlternativeNames_ in this [file](k8s_localhost_policy.json) like this:
-```
+```json
         "subjectAlternativeNames": {
             "dnsNames": [
                 "localhost",
@@ -33,7 +33,7 @@ If you are using another Kubernetes namespace you have to add your namespace to 
             ],
 ```
 From this github's base path:
-```
+```bash
 cd SSL
 az keyvault certificate create --vault-name <YourKeyVaultName> --name LocalhostK8s --policy "@k8s_localhost_policy.json"
 ```
@@ -41,11 +41,11 @@ az keyvault certificate create --vault-name <YourKeyVaultName> --name LocalhostK
 ## Create Service Principal (for test in local container)
 You should use managed identity within Azure
 You can login into Azure CLI with your user and execute the apps in that context without the principal
-```
+```bash
 az ad sp create-for-rbac --name securewebapp
 ```
 result should look like this
-```
+```json
 {
   "appId": "7b9a4d8a-0000-4ef2-bbb3-189a745cf434",
   "displayName": "securewebapp",
@@ -57,19 +57,19 @@ result should look like this
 You will need appId _\<YourAppId>_, password _\<YourAppKey>_ and tenant _\<YourTenantId>_ later.
 
 ## Add certificate access rights to Service Principal (for test in local container)
-```
+```bash
 az keyvault set-policy --name <YourKeyVaultName> --spn <YourAppId> --certificate-permissions get list --secret-permissions get list
 ```
 
 ## Build Container
 From this github's base path:
-```
+```bash
 cd SSL/corewebapp
 docker build . -t <yourrepo>/securewebapp:latest
 ```
 
 ## Run Container
-```
+```bash
 docker run -it -e CertificateName=LocalhostK8s -e KeyVaultName=<YourKeyVaultName> -e AzureConnectionString="RunAs=App;AppId=<YourAppId>;TenantId=<YourTenantId>;AppKey=<YourAppKey>" -p 5001:5001 <yourrepo>/securewebapp:latest
 ```
 
@@ -78,17 +78,17 @@ If you want that the RootCA is installed on your dev machine you just need to bu
 You need to have .NET Core 3.0 (SDK & ASP Runtime) installed. 
 <br/>
 Prepare your ENV variables and login to Azure CLI:
-```
+```bash
 setx KeyVaultName <YourKeyVaultName>
 setx CertificateName LocalhostK8s
 az login
 ```
 As an alternative you could export the connection string instead of login. But not good security practice. <br/>The main goal will be to skip this also in the container when we run it in ACI or AKS and using Managed Identity instead
-```
+```bash
 setx AzureConnectionString "RunAs=App;AppId=<YourAppId>;TenantId=<YourTenantId>;AppKey=<YourAppKey>" 
 ```
 <br/>From this github's base path:
-```
+```bash
 cd SSL/corewebapp
 dotnet restore
 dotnet build
