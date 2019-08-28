@@ -9,7 +9,7 @@
     <Product>CSE.SecureWebServerHelper</Product>
     <Copyright>MIT</Copyright>
     <PackageProjectUrl>https://github.com/h2floh/SecureAzure</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/h2floh/SecureAzure/SecureWebServerHelper</RepositoryUrl>
+    <RepositoryUrl>https://github.com/h2floh/SecureAzure</RepositoryUrl>
     <PackageTags>ASPCore, Kestrel, SSL, AppConfiguration, KeyVault</PackageTags>
     <RepositoryType>GIT</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
