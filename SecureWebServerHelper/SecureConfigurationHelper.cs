@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
 
-namespace Microsoft.CSE.SecureWebServerHelper
+namespace CSE.SecureWebServerHelper
 {
     public static class SecureConfigurationHelper
     {

@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Microsoft.CSE.SecureWebServerHelper</RootNamespace>
-    <PackageId>Microsoft.CSE.SecureWebServerHelper</PackageId>
+    <RootNamespace>CSE.SecureWebServerHelper</RootNamespace>
+    <PackageId>CSE.SecureWebServerHelper</PackageId>
     <Authors>Florian Wagner</Authors>
     <Company>Microsoft</Company>
-    <Product>Microsoft.CSE.SecureWebServerHelper</Product>
+    <Product>CSE.SecureWebServerHelper</Product>
     <Copyright>MIT</Copyright>
     <PackageProjectUrl>https://github.com/h2floh/SecureAzure</PackageProjectUrl>
     <RepositoryUrl>https://github.com/h2floh/SecureAzure/SecureWebServerHelper</RepositoryUrl>

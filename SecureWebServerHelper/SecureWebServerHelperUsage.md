@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using Microsoft.CSE.SecureWebServerHelper;
+using CSE.SecureWebServerHelper;
 
 namespace AADLoginSamplePersonalAndAllOrg
 {
