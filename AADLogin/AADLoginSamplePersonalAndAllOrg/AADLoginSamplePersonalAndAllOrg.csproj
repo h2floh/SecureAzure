@@ -9,7 +9,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="CSE.SecureWebServerHelper" Version="0.1.1-preview" />
+    <PackageReference Include="CSE.SecureWebServerHelper" Version="0.1.3-preview" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />

@@ -1,9 +1,10 @@
 ﻿# Build and NuGet Feed Status
 
-![Build status](https://dev.azure.com/flwagner/SecureAzure/_apis/build/status/SecureWebServerHelper-CI)
+Package Name: CSE.SecureWebServerHelper
 
-![Release status](https://vsrm.dev.azure.com/flwagner/_apis/public/Release/badge/1f5e9397-ffd4-41c0-843f-5a41ea0e3b86/1/1)
-
+| Build | Release | Released Package |
+|---|---|---|
+|![Build status](https://dev.azure.com/flwagner/SecureAzure/_apis/build/status/SecureWebServerHelper-CI)|![Release status](https://vsrm.dev.azure.com/flwagner/_apis/public/Release/badge/1f5e9397-ffd4-41c0-843f-5a41ea0e3b86/1/1)|[![NuGet Badge](https://buildstats.info/nuget/CSE.SecureWebServerHelper?includePreReleases=true)](https://www.nuget.org/packages/CSE.SecureWebServerHelper)|
 
 # How to use
 

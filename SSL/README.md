@@ -39,8 +39,7 @@ az keyvault certificate create --vault-name <YourKeyVaultName> --name LocalhostK
 ```
 
 ## Create Service Principal (for test in local container)
-You should use managed identity within Azure
-You can login into Azure CLI with your user and execute the apps in that context without the principal
+You should use managed identity within Azure. You can login into Azure CLI with your user and execute the apps in that context without the principal
 ```bash
 az ad sp create-for-rbac --name securewebapp
 ```
@@ -98,4 +97,4 @@ If you are using Windows you will see a request if you accept to store the certi
 
 ## Thanks to...
 Matt Small... for explaining [here](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) how to get the certificate including private key out of KeyVault (short: get as secret).<br/>
-Dr. Schizo... for raising the [question](https://stackoverflow.com/questions/53055234/kestrel-secure-https-x509-cert-from-keyvault)leading to Matt Small's post.
+Dr. Schizo... for raising the [question](https://stackoverflow.com/questions/53055234/kestrel-secure-https-x509-cert-from-keyvault) leading to Matt Small's post.
