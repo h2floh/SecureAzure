@@ -10,25 +10,17 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            // Local Test
-            //Environment.SetEnvironmentVariable("AzureConnectionString", "");
-            //Environment.SetEnvironmentVariable("KeyVaultName", "");
-            //Environment.SetEnvironmentVariable("CertificateName", "");
-            //Environment.SetEnvironmentVariable("CertificateThumbprint", "");
-            //
         }
 
         [Test]
         public void InstallTrustedRootCertificate()
         {
-            // Will use values provided in ENV Variable
-
-            SecureConfigurationHelper.ConfigureRootCAFromKeyVault();
+            SecureConfigurationHelper.ConfigureRootCAFromKeyVault(TestContext.Parameters["KeyVaultName"], TestContext.Parameters["CertificateName"], TestContext.Parameters["AzureConnectionString"]);
 
             using (X509Store certStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser))
             {
                 certStore.Open(OpenFlags.ReadOnly);
-                var certList = certStore.Certificates.Find(X509FindType.FindByThumbprint, Environment.GetEnvironmentVariable("CertificateThumbprint"), false);
+                var certList = certStore.Certificates.Find(X509FindType.FindByThumbprint, TestContext.Parameters["CertificateThumbprint"], false);
                 certStore.Close();
                 Assert.IsTrue(certList.Count == 1);
             }
