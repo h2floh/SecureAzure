@@ -14,5 +14,3 @@ cat > .runsettings << ENDOFFILE
   </TestRunParameters>
 </RunSettings>
 ENDOFFILE
-
-echo .runsettings
