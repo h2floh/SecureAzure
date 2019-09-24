@@ -31,9 +31,11 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CSE.SecureWebServerHelper
 {
+
     public static class SecureConfigurationHelper
     {
         private static Dictionary<string, KeyVaultClient> keyVaultClients = new Dictionary<string, KeyVaultClient>();
@@ -140,20 +142,50 @@ namespace CSE.SecureWebServerHelper
         /// <returns>IWebHostBuilder instance</returns>
         public static IWebHostBuilder ConfigureRootCAFromKeyVault(this IWebHostBuilder webHostBuilder, string keyVaultName = null, string certificateName = null, string azureConnectionString = null)
         {
+            ConfigureRootCAFromKeyVault(keyVaultName, certificateName, azureConnectionString);
+
+            return webHostBuilder;
+        }
+
+        /// <summary>
+        /// Intended for containerized microservices when you need SSL/HTTPS communication within the cluster. You can install a trusted root certificate
+        /// to avoid untrusted cert errors using WebClient connections.
+        /// </summary>
+        /// <param name="keyVaultName">Optional keyVaultName, otherwise will be retrieved by ENV 'KeyVaultName'</param>
+        /// <param name="certificateName">Optional certificateName, otherwise will be retrieved by ENV 'CertificateName'</param>
+        /// <param name="azureConnectionString">Optional azureConnectionString, otherwise will be retrieved by ENV 'AzureConnectionString'</param>
+        /// <param name="storeName">Optional StoreName for certificate</param>
+        /// <param name="storeLocation">Optional StoreLocation for certificate, on Linux only StoreLocation.CurrentUser is allowed see https://github.com/dotnet/corefx/blob/master/Documentation/architecture/cross-platform-cryptography.md</param>
+        public static void ConfigureRootCAFromKeyVault(string keyVaultName = null, string certificateName = null, string azureConnectionString = null, StoreName storeName = StoreName.Root, StoreLocation storeLocation = StoreLocation.CurrentUser)
+        {
             var keyVaultClient = PrepareKeyVaultClient(azureConnectionString);
             LoadValues(ref keyVaultName, ref certificateName);
 
-            var certificate = keyVaultClient.GetCertificateAsync($"https://{keyVaultName}.vault.azure.net", certificateName).GetAwaiter().GetResult();
-            var x509Cert = new X509Certificate2(certificate.Cer);
+            //var certificate = keyVaultClient.GetCertificateAsync($"https://{keyVaultName}.vault.azure.net", certificateName).GetAwaiter().GetResult();
+            //var x509Cert = new X509Certificate2(certificate.Cer);
 
-            using (X509Store certStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser))
+            var certBundle = keyVaultClient.GetSecretAsync($"https://{keyVaultName}.vault.azure.net", certificateName).GetAwaiter().GetResult();
+            byte[] certBytes = null;
+            if (certBundle.ContentType == "application/x-pkcs12")
             {
-                certStore.Open(OpenFlags.ReadWrite);
-                certStore.Add(x509Cert);
-                certStore.Close();
+                certBytes = Convert.FromBase64String(certBundle.Value);
+            }
+            else if (certBundle.ContentType == "application/pkix-cert")
+            {
+                certBytes = JsonConvert.DeserializeObject<PublicKeyCertificate>(certBundle?.Value).Data;
             }
 
-            return webHostBuilder;
+            if (certBytes != null && certBytes.Length > 0)
+            {
+                var x509Cert = new X509Certificate2(certBytes);
+
+                using (X509Store certStore = new X509Store(storeName, storeLocation))
+                {
+                    certStore.Open(OpenFlags.ReadWrite);
+                    certStore.Add(x509Cert);
+                    certStore.Close();
+                }
+            }
         }
 
         /// <summary>
@@ -248,6 +280,12 @@ namespace CSE.SecureWebServerHelper
             {
                 Console.WriteLine("No value for KeyVaultName detected, please either set the ENV 'KeyVaultName' or pass the value as parameter to your KeyVault");
             }
+        }
+
+        // class used to access public key certificate stored in Key Vault
+        public class PublicKeyCertificate
+        {
+            public byte[] Data;
         }
 
     }
