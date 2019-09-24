@@ -15,4 +15,4 @@ cat > .runsettings << ENDOFFILE
 </RunSettings>
 ENDOFFILE
 
-echo .runsettings
+cat .runsettings
