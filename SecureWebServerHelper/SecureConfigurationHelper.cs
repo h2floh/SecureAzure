@@ -81,7 +81,7 @@ namespace CSE.SecureWebServerHelper
         /// <param name="webHostBuilder">IWebHostBuilder</param>
         /// <param name="azureAppConfigConnectionStringKey">The app configuration parameter to Azure App Configuration connection String (should be stored in KeyVault)</param>
         /// <returns>IWebHostBuilder instance</returns>
-        public static IWebHostBuilder ConfigurationFromAzureAppConfig(this IWebHostBuilder webHostBuilder, string azureAppConfigConnectionStringKey = "ConnectionStrings:AppConfig")
+        public static IWebHostBuilder ConfigurationFromAzureAppConfig(this IWebHostBuilder webHostBuilder, string azureAppConfigConnectionStringKey = "ConnectionStrings:AppConfig", string refreshSettingsKey = "RefreshSettingsTrigger")
         {
 
             webHostBuilder.
@@ -94,8 +94,15 @@ namespace CSE.SecureWebServerHelper
                     {
                         Console.WriteLine($"Please specify the configuration '{azureAppConfigConnectionStringKey}' for your Azure App Configuration Service, you can save that as a secret in KeyVault and first call extension method ConfigrationFromKeyVault().");
                     }
-
-                    config.AddAzureAppConfiguration(settings[azureAppConfigConnectionStringKey]);
+                    
+                    config.AddAzureAppConfiguration(options =>
+                    {
+                        options.Connect(settings[azureAppConfigConnectionStringKey])
+                               .ConfigureRefresh(refresh =>
+                               {
+                                   refresh.Register(refreshSettingsKey, true);
+                               });
+                    });
                 });
 
             return webHostBuilder;
