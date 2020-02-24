@@ -42,6 +42,8 @@ namespace AADLoginSamplePersonalAndAllOrg
                 // The Azure App Service ConfigurationString is a secret and should be stored within KeyVault,
                 // the configuration key where the ConfigurationString is stored can be specified as parameter 
                 // if not standard value of 'ConnectionStrings:AppConfig' will be used
+                // If you add or modify the key 'RefreshSettingsTrigger' (default) within App Configuration Service the
+                // dependency injected IConfiguration object will be updated with the newest configuration keys and values
                 .ConfigurationFromAzureAppConfig()
                 
                 // The KeyVault and Certificate Name can be specified as parameters or in ENV 'KeyVaultName' and ENV 'CertificateName'
