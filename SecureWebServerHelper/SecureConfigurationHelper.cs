@@ -23,6 +23,7 @@ SOFTWARE.
 ***********************************************************************************************/
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -60,7 +61,7 @@ namespace CSE.SecureWebServerHelper
                 ConfigureAppConfiguration((context, config) =>
                 {
                     // Warning message that if it is not working on development machine.
-                    if (context.HostingEnvironment.IsDevelopment() && envAzureConnectionString == null && azureConnectionString == null)
+                    if (envAzureConnectionString == null && azureConnectionString == null)
                     {
                         Console.WriteLine("WARNING: In case of unexpected behavior/authentication errors please specify env variable 'AzureConnectionString' with value 'RunAs=App;AppId={AppId};TenantId={TenantId};AppKey={ClientSecret}' or configure managed identity (if development infra is wihtin Azure).");
                     }
